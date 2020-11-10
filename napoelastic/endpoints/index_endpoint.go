@@ -31,5 +31,11 @@ func (instance *IndexEndpoint) getInfo(ctx *gin.Context) {
 }
 
 func (instance *IndexEndpoint) getCat(ctx *gin.Context) {
+	result, err := instance.Services.GetCat()
+	if err != nil {
+		OutFailed(ctx, 200, err.Error())
+		return
+	}
 
+	OutOk(ctx, result)
 }
