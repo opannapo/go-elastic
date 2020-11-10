@@ -1,0 +1,14 @@
+{
+  "mode": "debug",
+  "server": {
+    "address": ":8181"
+  },
+  "context": {
+    "timeout": 2
+  },
+  "elastic": {
+    "address": [
+      "http://prod:9200"
+    ]
+  }
+}
