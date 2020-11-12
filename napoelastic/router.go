@@ -24,13 +24,18 @@ func initRouter(config *Config, db *DB) (router *gin.Engine) {
 		context.JSON(200, res)
 	})
 
-	//initial dependency
+	//initial dependency repositories
 	indexRepository := es.NewIndexRepositoryImpl(db.EsClient)
+	userRepository := es.NewUserRepositoryImpl(db.EsClient)
+
+	//initial dependency services
 	indexServiceImpl := services.NewIndexServicesImpl(indexRepository)
+	userServiceImpl := services.NewUserServiceImpl(userRepository)
 
 	v1 := router.Group("api/v1")
 	{
 		endpoints.InitIndexEndpoint(v1, indexServiceImpl)
+		endpoints.InitUserEndpoint(v1, userServiceImpl)
 	}
 
 	return
