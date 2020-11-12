@@ -30,12 +30,12 @@ func initRouter(config *Config, db *DB) (router *gin.Engine) {
 
 	//initial dependency services
 	indexServiceImpl := services.NewIndexServicesImpl(indexRepository)
-	userServiceImpl := services.NewUserServiceImpl(userRepository)
+	userServiceImpl := services.NewUserServiceImpl(&userRepository)
 
 	v1 := router.Group("api/v1")
 	{
 		endpoints.InitIndexEndpoint(v1, indexServiceImpl)
-		endpoints.InitUserEndpoint(v1, userServiceImpl)
+		endpoints.InitUserEndpoint(v1, &userServiceImpl)
 	}
 
 	return

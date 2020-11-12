@@ -7,10 +7,10 @@ import (
 
 type UserEndpoint struct {
 	Group    *gin.RouterGroup
-	Services services.UserService
+	Services *services.UserService
 }
 
-func InitUserEndpoint(group *gin.RouterGroup, services services.UserService) {
+func InitUserEndpoint(group *gin.RouterGroup, services *services.UserService) {
 	instance := &UserEndpoint{
 		Group:    group,
 		Services: services,
@@ -20,7 +20,8 @@ func InitUserEndpoint(group *gin.RouterGroup, services services.UserService) {
 }
 
 func (instance *UserEndpoint) getUsers(ctx *gin.Context) {
-	result, err := instance.Services.GetAll()
+	s := *instance.Services
+	result, err := s.GetAll()
 	if err != nil {
 		OutFailed(ctx, 200, err.Error())
 		return

@@ -5,14 +5,15 @@ import (
 )
 
 type UserServiceImpl struct {
-	Repository repository.UserRepository
+	Repository *repository.UserRepository
 }
 
-func NewUserServiceImpl(repository repository.UserRepository) UserService {
+func NewUserServiceImpl(repository *repository.UserRepository) UserService {
 	return &UserServiceImpl{Repository: repository}
 }
 
 func (instance *UserServiceImpl) GetAll() (result interface{}, err error) {
-	result, err = instance.Repository.GetAll()
+	r := *instance.Repository
+	result, err = r.GetAll()
 	return
 }
