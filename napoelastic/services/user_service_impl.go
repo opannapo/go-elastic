@@ -17,3 +17,21 @@ func (instance *UserServiceImpl) GetAll() (result interface{}, err error) {
 	result, err = r.GetAll()
 	return
 }
+
+func (instance *UserServiceImpl) GetById(id int64) (result interface{}, err error) {
+	r := *instance.Repository
+	result, err = r.GetById(id)
+	return
+}
+
+func (instance *UserServiceImpl) CreateOne(data interface{}) (result interface{}, err error) {
+	panic("implement me")
+}
+
+func (instance *UserServiceImpl) UpdateOne(id int64, data interface{}) (result interface{}, err error) {
+	panic("implement me")
+}
+
+func (instance *UserServiceImpl) ReplaceOne(id int64, data interface{}) (result interface{}, err error) {
+	panic("implement me")
+}

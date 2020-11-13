@@ -19,3 +19,15 @@ func (instance *UserRepositoryImpl) parsingHitsAsArray(res *esapi.Response, resu
 	*result = js["hits"].(map[string]interface{})["hits"]
 	return
 }
+
+func (instance *UserRepositoryImpl) parsingSource(res *esapi.Response, result *interface{}) (err error) {
+	if res.IsError() {
+		log.Fatalf("Error: %s", res.String())
+	}
+
+	if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
+		log.Fatalf("Error parsing response to js: %s", err)
+	}
+
+	return
+}
