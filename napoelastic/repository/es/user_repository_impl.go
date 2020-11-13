@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/elastic/go-elasticsearch/v7"
 	"log"
+	"napoelastic/napoelastic/entities"
 	"napoelastic/napoelastic/repository"
 	"strconv"
 )
@@ -16,7 +17,7 @@ func NewUserRepositoryImpl(esClient *elasticsearch.Client) repository.UserReposi
 	return &UserRepositoryImpl{ESClient: esClient}
 }
 
-func (instance *UserRepositoryImpl) GetAll() (result interface{}, err error) {
+func (instance *UserRepositoryImpl) GetAll() (result []entities.UserEntity, err error) {
 	es := instance.ESClient
 
 	res, err := es.Search(
@@ -31,11 +32,11 @@ func (instance *UserRepositoryImpl) GetAll() (result interface{}, err error) {
 	}
 	defer res.Body.Close()
 
-	err = instance.parsingHitsAsArray(res, &result)
+	err = parsingSourceArray(res, &result)
 	return
 }
 
-func (instance *UserRepositoryImpl) GetById(id int64) (result interface{}, err error) {
+func (instance *UserRepositoryImpl) GetById(id int64) (result *entities.UserEntity, err error) {
 	es := instance.ESClient
 	res, err := es.GetSource("user", strconv.Itoa(int(id)))
 	if err != nil {
@@ -43,7 +44,7 @@ func (instance *UserRepositoryImpl) GetById(id int64) (result interface{}, err e
 	}
 	defer res.Body.Close()
 
-	err = instance.parsingSource(res, &result)
+	err = parsingSource(res, &result)
 	return
 }
 

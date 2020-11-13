@@ -1,6 +1,7 @@
 package services
 
 import (
+	"napoelastic/napoelastic/entities"
 	"napoelastic/napoelastic/repository"
 )
 
@@ -12,13 +13,13 @@ func NewUserServiceImpl(repository *repository.UserRepository) UserService {
 	return &UserServiceImpl{Repository: repository}
 }
 
-func (instance *UserServiceImpl) GetAll() (result interface{}, err error) {
+func (instance *UserServiceImpl) GetAll() (result []entities.UserEntity, err error) {
 	r := *instance.Repository
 	result, err = r.GetAll()
 	return
 }
 
-func (instance *UserServiceImpl) GetById(id int64) (result interface{}, err error) {
+func (instance *UserServiceImpl) GetById(id int64) (result *entities.UserEntity, err error) {
 	r := *instance.Repository
 	result, err = r.GetById(id)
 	return
