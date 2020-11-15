@@ -2,6 +2,7 @@ package es
 
 import (
 	"context"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v7"
 	"log"
 	"napoelastic/napoelastic/entities"
@@ -28,11 +29,15 @@ func (instance *UserRepositoryImpl) GetAll() (result []entities.UserEntity, err 
 	)
 
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		fmt.Printf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
 
 	err = parsingSourceArray(res, &result)
+	if err != nil {
+		fmt.Printf("Error getting response: %s", err)
+	}
+
 	return
 }
 
@@ -40,11 +45,15 @@ func (instance *UserRepositoryImpl) GetById(id int64) (result *entities.UserEnti
 	es := instance.ESClient
 	res, err := es.GetSource("user", strconv.Itoa(int(id)))
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
+		return
 	}
 	defer res.Body.Close()
 
 	err = parsingSource(res, &result)
+	if err != nil {
+		log.Printf("Error parsingSource: %s", err)
+	}
 	return
 }
 

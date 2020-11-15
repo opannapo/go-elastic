@@ -2,18 +2,21 @@ package es
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v7/esapi"
 	"log"
 )
 
 func parsingSourceArray(res *esapi.Response, out interface{}) (err error) {
 	if res.IsError() {
-		log.Fatalf("Error: %s", res.String())
+		err = fmt.Errorf(parseErrorResponse(res))
+		return
 	}
 
 	var resJson map[string]interface{}
 	if err = json.NewDecoder(res.Body).Decode(&resJson); err != nil {
-		log.Fatalf("Error parsing response to js: %s", err)
+		log.Printf("Error parsing response to js: %s", err)
+		return
 	}
 
 	var result []interface{}
@@ -36,14 +39,23 @@ func parsingSourceArray(res *esapi.Response, out interface{}) (err error) {
 
 func parsingSource(res *esapi.Response, out interface{}) (err error) {
 	if res.IsError() {
-		log.Fatalf("Error: %s", res.String())
+		err = fmt.Errorf(parseErrorResponse(res))
+		log.Printf("parsingSource err %#v", err)
+		return
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(&out); err != nil {
-		log.Fatalf("Error parsing response to result: %s", err)
+		log.Printf("Error parsing response to result: %s", err)
 	}
 
-	log.Printf("out %#v", &out)
-
 	return
+}
+
+func parseErrorResponse(res *esapi.Response) string {
+	var outErr map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&outErr); err != nil {
+		log.Printf("Error parseErrorResponse : %s", err)
+	}
+
+	return outErr["error"].(map[string]interface{})["type"].(string)
 }
